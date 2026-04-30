@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,7 +121,6 @@
       opacity: 1;
     }
 
-    /* Subtle dark gradient so text always pops */
     .vgrad {
       position: absolute; inset: 0; z-index: 2;
       background: linear-gradient(
@@ -137,7 +135,6 @@
       height: 30%; z-index: 3;
       background: linear-gradient(to bottom, transparent, #0a0a0a);
     }
-    /* smooth cut into white section below */
     .hero-fade {
       position: absolute; bottom: -2px; left: 0; right: 0;
       height: 120px; z-index: 4;
@@ -155,7 +152,6 @@
     .panel.vis { opacity: 1; }
     .panel * { text-shadow: 0 2px 28px rgba(0,0,0,.5); }
 
-    /* Panel 0 — name */
     .p0 { flex-direction: column; align-items: flex-start; justify-content: center; padding-left: 10vw; }
 
     .p0-ey {
@@ -205,7 +201,6 @@
       50%      { transform: scaleX(.35); opacity: .35; }
     }
 
-    /* Panel 1 */
     .p1 { align-items: flex-end; justify-content: flex-start; padding-left: 10vw; padding-bottom: 14vh; }
     .p1-txt {
       font-family: var(--fp);
@@ -215,7 +210,6 @@
     }
     .p1-txt em { font-style: italic; color: #f5c8a8; }
 
-    /* Panel 2 */
     .p2 { justify-content: flex-end; align-items: center; padding-right: 10vw; }
     .sstack { display: flex; flex-direction: column; gap: 0; align-items: flex-end; }
     .si { padding: 26px 0; border-bottom: 1px solid rgba(255,255,255,.14); }
@@ -231,7 +225,6 @@
       color: rgba(255,255,255,.45); text-align: right; margin-top: 4px;
     }
 
-    /* Panel 3 */
     .p3 { justify-content: center; align-items: center; flex-direction: column; gap: 0; }
     .pw {
       font-family: var(--fp);
@@ -297,7 +290,7 @@
     }
     .skill-pill:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-2px); }
 
-    /* ─── WORK (6 PROJECTS) ──────────────────────────── */
+    /* ─── WORK ───────────────────────────────────────── */
     .work {
       padding: 100px 10vw; background: var(--bg2);
       border-top: 1px solid var(--line);
@@ -502,7 +495,7 @@
               <div class="sl">Years Experience</div>
             </div>
             <div class="si">
-              <div class="sn">6<sup style="font-family:var(--fu);font-size:.45em;font-weight:400">+</sup></div>
+              <div class="sn">7<sup style="font-family:var(--fu);font-size:.45em;font-weight:400">+</sup></div>
               <div class="sl">Projects Shipped</div>
             </div>
             <div class="si">
@@ -544,60 +537,141 @@
         Currently focused on <strong>creative front-end work</strong> and building tools that empower teams to ship faster without sacrificing quality. Based in Delhi, open to remote opportunities worldwide.
       </p>
       <div class="skills fu" style="transition-delay:.3s">
-        <span class="skill-pill">React.js </span>
+        <span class="skill-pill">React.js</span>
         <span class="skill-pill">Python</span>
         <span class="skill-pill">Node.js</span>
         <span class="skill-pill">HTML</span>
         <span class="skill-pill">CSS</span>
-        <span class="skill-pill"> JAVASCRIPT</span>
-        <span class="skill-pill">MYSQL</span>
-        <span class="skill-pill"> DJANGO</span>
-       
-
+        <span class="skill-pill">JavaScript</span>
+        <span class="skill-pill">MySQL</span>
+        <span class="skill-pill">Django</span>
       </div>
     </div>
   </section>
 
-  <!-- ── WORK — 6 PROJECTS ───────────────────────────── -->
+  <!-- ── WORK — 7 PROJECTS ───────────────────────────── -->
   <section class="work" id="work">
     <div class="shdr">
       <h2 class="sttl fu"><em>Selected</em><br>Work</h2>
-      <p class="smeta fu">2024 — 2026<br>4 Projects</p>
+      <p class="smeta fu">2024 — 2026<br>7 Projects</p>
     </div>
 
     <div>
 
-      <a class="proj-row fu" href="https://github.com/boxerdinesh88-png/boxerdinesh88-png" target="_blank" rel="noopener">
+      <!-- 01 — Event Directory (Full-Stack — most complex, listed first) -->
+      <a class="proj-row fu" href="https://eventdirectory.pythonanywhere.com/auth/login/" target="_blank" rel="noopener">
         <span class="pnum">01</span>
         <div>
-          <div class="pname">Portfolio Website</div>
-          <div class="ptags"><span class="tag">HTML/CSS</span><span class="tag">JavaScript</span><span class="tag">GSAP</span><span class="tag">Scroll Animation</span></div>
-        </div>
-        <span class="pyear">2025</span>
-        <span class="parr">↗</span>
-      </a>
-
-      <a class="proj-row fu" href="https://eventdirectory.pythonanywhere.com/auth/login/" target="_blank" rel="noopener" style="transition-delay:.06s">
-        <span class="pnum">02</span>
-        <div>
-          <div class="pname">E-Commerce eventdirectory Dashboard</div>
-          <div class="ptags"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">MongoDB</span><span class="tag">REST API</span></div>
+          <div class="pname">Event Directory</div>
+          <div class="ptags">
+            <span class="tag">Full-Stack</span>
+            <span class="tag">Django</span>
+            <span class="tag">Python</span>
+            <span class="tag">REST API</span>
+            <span class="tag">MySQL</span>
+          </div>
         </div>
         <span class="pyear">2026</span>
         <span class="parr">↗</span>
       </a>
 
-      <a class="proj-row fu" href="https://github.com/boxerdinesh88-png/parking.git" target="_blank" rel="noopener" style="transition-delay:.18s">
-        <span class="pnum">03</span>
+      <!-- 02 — Makeup Forever -->
+      <a class="proj-row fu" href="https://boxerdinesh88-png.github.io/makeupforever/" target="_blank" rel="noopener" style="transition-delay:.06s">
+        <span class="pnum">02</span>
         <div>
-          <div class="pname">PARKING WEBSITE </div>
-          <div class="ptags"><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">PostgreSQL</span><span class="tag">Prisma</span></div>
+          <div class="pname">Makeup Forever Salon &amp; Academy</div>
+          <div class="ptags">
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">Bootstrap 5</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Google Maps API</span>
+            <span class="tag">Luxury UI</span>
+          </div>
         </div>
         <span class="pyear">2025</span>
         <span class="parr">↗</span>
       </a>
 
-   
+      <!-- 03 — Parking Web -->
+      <a class="proj-row fu" href="https://boxerdinesh88-png.github.io/parking-web/" target="_blank" rel="noopener" style="transition-delay:.09s">
+        <span class="pnum">03</span>
+        <div>
+          <div class="pname">Smart Parking System</div>
+          <div class="ptags">
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Responsive</span>
+            <span class="tag">UI Design</span>
+          </div>
+        </div>
+        <span class="pyear">2025</span>
+        <span class="parr">↗</span>
+      </a>
+
+      <!-- 04 — Car Website -->
+      <a class="proj-row fu" href="https://boxerdinesh88-png.github.io/car-website/" target="_blank" rel="noopener" style="transition-delay:.12s">
+        <span class="pnum">04</span>
+        <div>
+          <div class="pname">Car Showcase Website</div>
+          <div class="ptags">
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Animations</span>
+            <span class="tag">Landing Page</span>
+          </div>
+        </div>
+        <span class="pyear">2025</span>
+        <span class="parr">↗</span>
+      </a>
+
+      <!-- 05 — Maxent Food -->
+      <a class="proj-row fu" href="https://boxerdinesh88-png.github.io/mexentfood/" target="_blank" rel="noopener" style="transition-delay:.15s">
+        <span class="pnum">05</span>
+        <div>
+          <div class="pname">Maxent Food — Restaurant Platform</div>
+          <div class="ptags">
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Food Tech</span>
+            <span class="tag">UX Design</span>
+          </div>
+        </div>
+        <span class="pyear">2025</span>
+        <span class="parr">↗</span>
+      </a>
+
+      <!-- 06 — Gym Website -->
+      <a class="proj-row fu" href="https://boxerdinesh88-png.github.io/gym/" target="_blank" rel="noopener" style="transition-delay:.18s">
+        <span class="pnum">06</span>
+        <div>
+          <div class="pname">Gym &amp; Fitness Studio</div>
+          <div class="ptags">
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Scroll Animation</span>
+            <span class="tag">Landing Page</span>
+          </div>
+        </div>
+        <span class="pyear">2025</span>
+        <span class="parr">↗</span>
+      </a>
+
+      <!-- 07 — Portfolio -->
+      <a class="proj-row fu" href="https://boxerdinesh88-png.github.io/portfolio-/" target="_blank" rel="noopener" style="transition-delay:.21s">
+        <span class="pnum">07</span>
+        <div>
+          <div class="pname">Developer Portfolio</div>
+          <div class="ptags">
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">GSAP</span>
+            <span class="tag">Scroll Scrub</span>
+            <span class="tag">Custom Cursor</span>
+          </div>
+        </div>
+        <span class="pyear">2025</span>
+        <span class="parr">↗</span>
+      </a>
 
     </div>
   </section>
@@ -622,8 +696,6 @@
         </div>
         <span class="ebadge cur">Current</span>
       </div>
-
-      
 
     </div>
   </section>
