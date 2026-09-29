@@ -135,12 +135,18 @@ if (!reduced) {
   gsap.ticker.lagSmoothing(0);
   lenis.stop();
 }
+// re-measure first: Lenis caches the page height, which grows as images and pinned sections settle
+function smoothTo(target) {
+  if (!lenis) return target.scrollIntoView({ behavior: "smooth" });
+  lenis.resize();
+  lenis.scrollTo(target, { duration: 1.6 });
+}
 $$('a[href^="#"]').forEach((a) =>
   a.addEventListener("click", (e) => {
     const target = $(a.getAttribute("href"));
     if (!target) return;
     e.preventDefault();
-    lenis ? lenis.scrollTo(target, { offset: 0, duration: 1.6 }) : target.scrollIntoView({ behavior: "smooth" });
+    smoothTo(target);
   })
 );
 
@@ -164,6 +170,7 @@ const poses = mobile
     ]
   : [
       ["#about", { x: -2.9, y: 0.3, scale: 0.75, amp: 0.5, freq: 1.3, hue: 0.6 }],
+      ["#glance", { x: 4.4, y: -0.3, scale: 0.8, opacity: 0.4, hue: 0.9 }],
       ["#work", { x: 0, y: 0, scale: 1.55, amp: 0.2, freq: 0.7, ring: 0, opacity: 0.35, hue: 1.2 }],
       ["#projects", { x: 2.8, y: -0.4, scale: 0.9, amp: 0.45, ring: 1, opacity: 0.8, hue: 1.6 }],
       ["#experience", { x: 4.3, y: 0.2, scale: 0.75, amp: 0.35, freq: 1.1, opacity: 0.45, hue: 2.1 }],
@@ -255,6 +262,12 @@ ScrollTrigger.create({
   });
 }
 
+function countUp(el) {
+  const o = { v: 0 };
+  gsap.to(o, { v: +el.dataset.count, duration: 1.6, ease: "power2.out", onUpdate: () => (el.textContent = Math.round(o.v) + el.dataset.suffix) });
+}
+$$(".bento [data-count]").forEach((el) => ScrollTrigger.create({ trigger: el, start: "top 90%", once: true, onEnter: () => countUp(el) }));
+
 /* ───────────── intro (loader → hero) ───────────── */
 function intro() {
   const counter = { v: 0 };
@@ -274,14 +287,19 @@ function intro() {
     .from(".hero__stats .stat", { y: 30, opacity: 0, duration: 1, stagger: 0.08 }, "-=0.9")
     .to(intro3d, { grow: 1, duration: 2.2, ease: "expo.out" }, "-=2")
     .add(() => {
-      $$("[data-count]").forEach((el) => {
-        const o = { v: 0 };
-        gsap.to(o, { v: +el.dataset.count, duration: 1.6, ease: "power2.out", onUpdate: () => (el.textContent = Math.round(o.v) + el.dataset.suffix) });
-      });
+      $$(".hero [data-count]").forEach(countUp);
     }, "-=1.6");
 }
 document.body.classList.add("is-loading");
-(document.fonts?.ready ?? Promise.resolve()).then(intro);
+// don't let a slow font request hold the loader
+Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 2000))]).then(intro);
+// safety net: never leave the page locked behind the loader
+setTimeout(() => {
+  if (!$("#loader")) return;
+  $("#loader").remove();
+  document.body.classList.remove("is-loading");
+  lenis?.start();
+}, 7000);
 
 /* ───────────── scroll animations ───────────── */
 if (!reduced) {
@@ -333,6 +351,112 @@ if (!reduced) {
   });
   mm.add("(max-width: 900px)", () => {
     $$(".fcard").forEach((el) => gsap.from(el, { y: 80, opacity: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 90%" } }));
+  });
+}
+
+/* ───────────── spotlight, clock, copy email ───────────── */
+$$(".service, .fcard, .pcard, .edu__item").forEach((el) => el.classList.add("spot"));
+document.addEventListener("pointermove", (e) => {
+  const el = e.target.closest?.(".spot");
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+  el.style.setProperty("--my", `${e.clientY - r.top}px`);
+}, { passive: true });
+
+{
+  const clock = $("#clock");
+  const fmt = new Intl.DateTimeFormat("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "Asia/Kolkata" });
+  const hourFmt = new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Asia/Kolkata" });
+  const draw = () => {
+    const now = new Date();
+    const [time, ampm = ""] = fmt.format(now).split(" ");
+    clock.innerHTML = `${time}<small>${ampm.toUpperCase()}</small>`;
+    const h = +hourFmt.format(now);
+    $("#clockNote").textContent = `IST · UTC+5:30 · ${h >= 10 && h < 19 ? "working hours" : "outside working hours"}`;
+  };
+  draw();
+  setInterval(draw, 15000);
+}
+
+const toast = (msg) => {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("is-on");
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => t.classList.remove("is-on"), 2200);
+};
+async function copyEmail() {
+  try { await navigator.clipboard.writeText(profile.email); toast("Email copied — " + profile.email); }
+  catch { location.href = `mailto:${profile.email}`; }
+}
+$("#copyEmail").addEventListener("click", copyEmail);
+
+/* ───────────── command palette (Ctrl/⌘ + K) ───────────── */
+{
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+  $("#cmdKey").textContent = mobile ? "Menu" : isMac ? "⌘ K" : "Ctrl K";
+  const go = (sel) => () => smoothTo($(sel));
+  const open = (url) => () => window.open(url, "_blank", "noopener");
+  const commands = [
+    { group: "Navigate", icon: "⌂", label: "Home", run: go("#top") },
+    { group: "Navigate", icon: "◎", label: "About", run: go("#about") },
+    { group: "Navigate", icon: "▦", label: "At a glance", run: go("#glance") },
+    { group: "Navigate", icon: "★", label: "Featured work", run: go("#work") },
+    { group: "Navigate", icon: "◧", label: "Client work", run: go("#projects") },
+    { group: "Navigate", icon: "⌁", label: "Experience", run: go("#experience") },
+    { group: "Navigate", icon: "✦", label: "Skills & education", run: go("#skills") },
+    { group: "Navigate", icon: "✉", label: "Contact", run: go("#contact") },
+    { group: "Actions", icon: "⧉", label: "Copy email address", hint: profile.email, run: copyEmail },
+    { group: "Actions", icon: "↓", label: "Download résumé", hint: "PDF", run: open(profile.resume) },
+    { group: "Actions", icon: "☏", label: "Chat on WhatsApp", run: open(profile.whatsapp) },
+    { group: "Links", icon: "in", label: "LinkedIn", run: open(profile.linkedin) },
+    { group: "Links", icon: "⌥", label: "GitHub", run: open(profile.github) },
+    ...featured.map((p) => ({ group: "Projects", icon: "↗", label: p.title, hint: p.subtitle, run: open(p.link) })),
+    ...projects.map((p) => ({ group: "Projects", icon: "↗", label: p.title, hint: p.subtitle, run: open(p.link) })),
+  ];
+  const root = $("#cmdk"), input = $("#cmdInput"), list = $("#cmdList");
+  let items = [], active = 0;
+
+  const render = () => {
+    const q = input.value.trim().toLowerCase();
+    items = commands.filter((c) => !q || `${c.label} ${c.hint || ""} ${c.group}`.toLowerCase().includes(q));
+    active = Math.min(active, Math.max(items.length - 1, 0));
+    if (!items.length) { list.innerHTML = `<li class="cmdk__empty">No results for “${esc(input.value)}”</li>`; return; }
+    let html = "", last = "";
+    items.forEach((c, i) => {
+      if (c.group !== last) { html += `<li class="cmdk__group">${c.group}</li>`; last = c.group; }
+      html += `<li class="cmdk__item ${i === active ? "is-active" : ""}" role="option" data-i="${i}"><i>${c.icon}</i><span>${esc(c.label)}</span>${c.hint ? `<small>${esc(c.hint)}</small>` : ""}</li>`;
+    });
+    list.innerHTML = html;
+    list.querySelector(".is-active")?.scrollIntoView({ block: "nearest" });
+  };
+  const show = () => {
+    root.hidden = false; input.value = ""; active = 0; render(); input.focus(); lenis?.stop();
+    gsap.fromTo(".cmdk__panel", { y: -16, scale: 0.97, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.35, ease: "expo.out" });
+    gsap.fromTo(".cmdk__backdrop", { opacity: 0 }, { opacity: 1, duration: 0.25 });
+  };
+  const hide = () => { root.hidden = true; lenis?.start(); };
+  const runActive = () => { const c = items[active]; if (!c) return; hide(); c.run(); };
+
+  $("#cmdOpen").addEventListener("click", show);
+  root.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) return hide();
+    const li = e.target.closest(".cmdk__item");
+    if (li) { active = +li.dataset.i; runActive(); }
+  });
+  list.addEventListener("pointermove", (e) => {
+    const li = e.target.closest(".cmdk__item");
+    if (li && +li.dataset.i !== active) { active = +li.dataset.i; render(); }
+  });
+  input.addEventListener("input", () => { active = 0; render(); });
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); root.hidden ? show() : hide(); return; }
+    if (root.hidden) return;
+    if (e.key === "Escape") hide();
+    else if (e.key === "ArrowDown") { e.preventDefault(); active = (active + 1) % items.length; render(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); active = (active - 1 + items.length) % items.length; render(); }
+    else if (e.key === "Enter") { e.preventDefault(); runActive(); }
   });
 }
 
