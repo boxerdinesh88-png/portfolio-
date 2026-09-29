@@ -52,7 +52,11 @@ $("#featured").innerHTML = featured
 $("#grid").innerHTML = projects
   .map((p) => `
   <a class="pcard" data-cat="${p.cat}" href="${p.link}" ${ext}>
-    <div class="pcard__img"><img src="${p.img}" alt="${esc(p.title)} screenshot" loading="lazy" /></div>
+    <div class="pcard__img">
+      <img src="${p.img}" alt="${esc(p.title)} screenshot" loading="lazy" />
+      <span class="pcard__cat">${p.cat === "wp" ? "WordPress" : "Front-end"}</span>
+      <span class="pcard__visit">Visit site ↗</span>
+    </div>
     <div class="pcard__body">
       <div class="pcard__row"><h3>${esc(p.title)}</h3><span class="pcard__arrow">→</span></div>
       <p>${esc(p.subtitle)}</p>
