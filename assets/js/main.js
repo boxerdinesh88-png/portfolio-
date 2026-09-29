@@ -82,12 +82,43 @@ $("#timeline").insertAdjacentHTML("beforeend", experience
   </div>`)
   .join(""));
 
-$("#skillsList").innerHTML = skills
-  .map((g) => `<div class="skills__row" data-reveal><h3>${esc(g.group)}</h3><div class="chips">${g.items.map((s) => `<span>${esc(s)}</span>`).join("")}</div></div>`)
+const LEVELS = ["", "Intermediate", "Advanced", "Expert"];
+const meter = (l) => `<i class="meter" data-l="${l}" aria-label="${LEVELS[l]}"><b></b><b></b><b></b></i>`;
+$("#skillGrid").innerHTML = skills
+  .map((g, i) => `
+  <article class="scard scard--${g.group.toLowerCase()}" data-tilt-soft>
+    <header class="scard__head">
+      <span class="scard__n">${String(i + 1).padStart(2, "0")}</span>
+      <div><h3>${esc(g.group)}</h3><p>${esc(g.blurb)}</p></div>
+      <span class="scard__count">${g.items.length}</span>
+    </header>
+    <ul class="scard__list">
+      ${g.items.map((s) => `
+      <li class="skill">
+        <span class="skill__icon">${s.icon ? `<img src="assets/stack/${s.icon}.svg" alt="" loading="lazy" />` : `<b>${esc(s.name[0])}</b>`}</span>
+        <span class="skill__name">${esc(s.name)}</span>
+        <span class="skill__lvl">${LEVELS[s.level]}</span>
+        ${meter(s.level)}
+      </li>`).join("")}
+    </ul>
+  </article>`)
   .join("");
-$("#edu").innerHTML = education
-  .map((e) => `<div class="edu__item" data-reveal><span>${esc(e.period)}</span><h3>${esc(e.title)}</h3><p>${esc(e.place)}</p></div>`)
-  .join("");
+
+$("#eduTimeline").insertAdjacentHTML("beforeend", education
+  .map((e) => `
+  <div class="enode enode--${e.kind}">
+    <span class="enode__dot"></span>
+    <div class="enode__card">
+      <div class="enode__top">
+        <span class="enode__period">${esc(e.period)}</span>
+        <span class="enode__tag">${{ current: "In progress", cert: "Certified", done: "Completed" }[e.kind]}</span>
+      </div>
+      <h4>${esc(e.title)}</h4>
+      <p>${esc(e.place)}</p>
+      ${e.cert ? `<a class="enode__cert" href="${e.cert}" ${ext}><img src="${e.thumb}" alt="${esc(e.title)} certificate" loading="lazy" /><span>View certificate ↗</span></a>` : ""}
+    </div>
+  </div>`)
+  .join(""));
 
 const email = $("#email");
 email.href = `mailto:${profile.email}`;
@@ -184,7 +215,7 @@ const poses = mobile
       ["#projects", { x: 2.8, y: -0.4, scale: 0.9, amp: 0.45, ring: 1, opacity: 0.8, hue: 1.6 }],
       ["#experience", { x: 4.3, y: 0.2, scale: 0.75, amp: 0.35, freq: 1.1, opacity: 0.45, hue: 2.1 }],
       ["#stack", { x: -4.8, y: 0.4, scale: 0.7, amp: 0.5, opacity: 0.25, hue: 2.4 }],
-      ["#skills", { x: -4.4, y: -0.6, scale: 0.8, amp: 0.6, opacity: 0.45, hue: 2.6 }],
+      ["#skills", { x: -5.4, y: -0.6, scale: 0.75, amp: 0.6, opacity: 0.3, hue: 2.6 }],
       ["#contact", { x: 3.1, y: 0, scale: 1.05, amp: 0.4, freq: 0.9, opacity: 1, ring: 1, hue: 3.2 }],
     ];
 let poseTriggers = []; // created at the end, after the pinned section, so pin spacing is included
@@ -227,6 +258,18 @@ if (!mobile) {
       my((e.clientY - r.top - r.height / 2) * 0.35);
     });
     el.addEventListener("pointerleave", () => { mx(0); my(0); });
+  });
+
+  $$("[data-tilt-soft]").forEach((el) => {
+    const rx = gsap.quickTo(el, "rotationX", { duration: 0.8, ease: "power3" });
+    const ry = gsap.quickTo(el, "rotationY", { duration: 0.8, ease: "power3" });
+    gsap.set(el, { transformPerspective: 1200 });
+    el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      ry(((e.clientX - r.left) / r.width - 0.5) * 6);
+      rx(-((e.clientY - r.top) / r.height - 0.5) * 6);
+    });
+    el.addEventListener("pointerleave", () => { rx(0); ry(0); });
   });
 
   const tilt = $("[data-tilt]");
@@ -410,6 +453,28 @@ if (!reduced) {
   // contact title
   gsap.from(".contact__title .ch", { yPercent: 115, duration: 1.2, stagger: 0.02, ease: "expo.out", scrollTrigger: { trigger: ".contact__title", start: "top 80%" } });
 
+  const mm0 = gsap.matchMedia();
+  // skills: cards rise in, meters fill segment by segment, rows slide in
+  $$(".scard").forEach((card, i) => {
+    const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: "top 85%" } });
+    tl.from(card, { y: 70, opacity: 0, rotateX: -12, transformPerspective: 1000, transformOrigin: "50% 100%", duration: 1.1, ease: "expo.out", delay: (i % 3) * 0.08 })
+      .from(card.querySelectorAll(".skill"), { x: -16, opacity: 0, duration: 0.6, stagger: 0.05, ease: "power3.out" }, "-=0.7")
+      .fromTo(card.querySelectorAll(".skill .meter b"), { scaleX: 0 }, { scaleX: 1, duration: 0.4, stagger: 0.03, ease: "power2.out" }, "-=0.5");
+  });
+
+  // education: the track draws with scroll and each node lights up as the line reaches it
+  const eduNodes = $$(".enode");
+  mm0.add("(min-width: 901px)", () => {
+    gsap.fromTo("#eduFill", { scaleX: 0 }, { scaleX: 1, ease: "none", scrollTrigger: { trigger: "#eduTimeline", start: "top 80%", end: "top 30%", scrub: 0.6 } });
+  });
+  mm0.add("(max-width: 900px)", () => {
+    gsap.fromTo("#eduFill", { scaleY: 0 }, { scaleY: 1, ease: "none", scrollTrigger: { trigger: "#eduTimeline", start: "top 75%", end: "bottom 60%", scrub: 0.6 } });
+  });
+  eduNodes.forEach((n, i) => {
+    gsap.from(n.querySelector(".enode__card"), { y: 50, opacity: 0, duration: 1, ease: "expo.out", delay: i * 0.12, scrollTrigger: { trigger: "#eduTimeline", start: "top 78%" } });
+    gsap.from(n.querySelector(".enode__dot"), { scale: 0, duration: 0.6, ease: "back.out(3)", delay: 0.2 + i * 0.12, scrollTrigger: { trigger: "#eduTimeline", start: "top 78%" } });
+  });
+
   const mm = gsap.matchMedia();
 
   // horizontal featured projects (desktop)
@@ -437,7 +502,7 @@ if (!reduced) {
 }
 
 /* ───────────── spotlight, clock, copy email ───────────── */
-$$(".service, .fcard, .pcard, .edu__item").forEach((el) => el.classList.add("spot"));
+$$(".service, .fcard, .pcard, .scard, .enode__card").forEach((el) => el.classList.add("spot"));
 document.addEventListener("pointermove", (e) => {
   const el = e.target.closest?.(".spot");
   if (!el) return;

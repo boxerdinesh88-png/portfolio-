@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.13/dist/lenis.css" />
-  <link rel="stylesheet" href="assets/css/style.css?v=9" />
+  <link rel="stylesheet" href="assets/css/style.css?v=12" />
 
   <script type="importmap">
     { "imports": {
@@ -207,11 +207,27 @@
 
     <!-- SKILLS + EDUCATION -->
     <section class="section skills" id="skills">
-      <div class="section__label">05 — Toolkit</div>
-      <h2 class="h2">Skills &amp; <em>education</em></h2>
-      <div class="skills__grid">
-        <div class="skills__list" id="skillsList"></div>
-        <div class="edu" id="edu"></div>
+      <div class="skills__head">
+        <div>
+          <div class="section__label">05 — Toolkit</div>
+          <h2 class="h2">Skills &amp; <em>education</em></h2>
+        </div>
+        <div class="legend" aria-label="Proficiency legend">
+          <span><i class="meter" data-l="3"><b></b><b></b><b></b></i>Expert</span>
+          <span><i class="meter" data-l="2"><b></b><b></b><b></b></i>Advanced</span>
+          <span><i class="meter" data-l="1"><b></b><b></b><b></b></i>Intermediate</span>
+        </div>
+      </div>
+      <div class="skillgrid" id="skillGrid"></div>
+
+      <div class="edu2">
+        <div class="edu2__head">
+          <h3>Education &amp; <em>certification</em></h3>
+          <p>From school boards to a full-stack certification — and still learning.</p>
+        </div>
+        <div class="etl" id="eduTimeline">
+          <div class="etl__track"><span id="eduFill"></span></div>
+        </div>
       </div>
     </section>
 
@@ -247,6 +263,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script type="module" src="assets/js/main.js?v=12"></script>
+  <script type="module" src="assets/js/main.js?v=14"></script>
 </body>
 </html>

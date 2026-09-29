@@ -109,17 +109,46 @@ export const experience = [
   },
 ];
 
+// level: 3 = Expert, 2 = Advanced, 1 = Intermediate · icon = file in assets/stack/
 export const skills = [
-  { group: "Frontend", items: ["React.js", "Next.js", "JavaScript", "TypeScript", "HTML5 / CSS3", "Tailwind", "Bootstrap 5", "GSAP", "Three.js"] },
-  { group: "Backend", items: ["Python", "Django", "Django REST", "REST APIs", "Node.js"] },
-  { group: "Data", items: ["MySQL", "Database Design", "Query Optimization"] },
-  { group: "CMS", items: ["WordPress", "Elementor", "Custom Widgets", "Theme & Plugin Customization"] },
-  { group: "Tools", items: ["Git & GitHub", "Vercel", "PythonAnywhere", "Figma", "ChatGPT & Claude"] },
+  { group: "Frontend", blurb: "Interfaces, motion & 3D", items: [
+    { name: "HTML5 / CSS3", level: 3, icon: "html5" },
+    { name: "React.js", level: 2, icon: "react" },
+    { name: "JavaScript", level: 2, icon: "javascript" },
+    { name: "Tailwind & Bootstrap", level: 2, icon: "tailwindcss" },
+    { name: "GSAP Animations", level: 2 },
+    { name: "Next.js", level: 1, icon: "nextjs" },
+    { name: "TypeScript", level: 1, icon: "typescript" },
+    { name: "Three.js", level: 1, icon: "threejs" },
+  ] },
+  { group: "Backend", blurb: "APIs, auth & business logic", items: [
+    { name: "Python", level: 3, icon: "python" },
+    { name: "Django", level: 2, icon: "django" },
+    { name: "REST APIs", level: 2 },
+    { name: "Node.js", level: 1, icon: "nodejs" },
+  ] },
+  { group: "CMS", blurb: "WordPress sites that convert", items: [
+    { name: "WordPress", level: 3, icon: "wordpress" },
+    { name: "Elementor", level: 3 },
+    { name: "Custom Widgets", level: 2 },
+    { name: "Theme & Plugins", level: 2 },
+  ] },
+  { group: "Data", blurb: "Schemas & performance", items: [
+    { name: "MySQL", level: 2, icon: "mysql" },
+    { name: "Database Design", level: 2 },
+  ] },
+  { group: "Tools", blurb: "Ship, deploy & design", items: [
+    { name: "Git & GitHub", level: 3, icon: "git" },
+    { name: "PythonAnywhere", level: 2 },
+    { name: "AI (ChatGPT & Claude)", level: 2 },
+    { name: "Figma", level: 1, icon: "figma" },
+  ] },
 ];
 
+// kind: "current" | "cert" | "done"
 export const education = [
-  { title: "BA (2nd Year)", place: "School of Open Learning, Delhi University", period: "2025 — Present" },
-  { title: "Full Stack Python Development", place: "DUCAT Institute, Noida — Certification", period: "2024" },
-  { title: "Intermediate (XII), CBSE", place: "GMSBV Shahdara, Delhi", period: "2021" },
-  { title: "High School (X), UP Board", place: "SFCS Loni Rampark", period: "2019" },
+  { title: "BA (2nd Year)", place: "School of Open Learning, Delhi University", period: "2025 — Present", kind: "current" },
+  { title: "Full Stack Developer — Python", place: "DUCAT School of AI, Noida", period: "2024 — 2026", kind: "cert", cert: "assets/ducat-certificate.pdf", thumb: "assets/ducat-certificate.webp" },
+  { title: "Intermediate (XII)", place: "GMSBV Shahdara, Delhi · CBSE", period: "2021", kind: "done" },
+  { title: "High School (X)", place: "SFCS Loni Rampark · UP Board", period: "2019", kind: "done" },
 ];
