@@ -1,5 +1,6 @@
-import { profile, services, featured, projects, experience, skills, education } from "./data.js";
-import { createScene, state } from "./scene.js";
+import { profile, services, featured, projects, experience, skills, education } from "./data.js?v=9";
+import { createScene, state } from "./scene.js?v=7";
+import { createStack } from "./stack.js?v=9";
 
 const { gsap, ScrollTrigger, Lenis } = window;
 gsap.registerPlugin(ScrollTrigger);
@@ -54,7 +55,7 @@ $("#grid").innerHTML = projects
   <a class="pcard" data-cat="${p.cat}" href="${p.link}" ${ext}>
     <div class="pcard__img">
       <img src="${p.img}" alt="${esc(p.title)} screenshot" loading="lazy" />
-      <span class="pcard__cat">${p.cat === "wp" ? "WordPress" : "Front-end"}</span>
+      <span class="pcard__cat">${{ wp: "WordPress", ec: "E-commerce", fe: "Front-end" }[p.cat]}</span>
       <span class="pcard__visit">Visit site ↗</span>
     </div>
     <div class="pcard__body">
@@ -159,6 +160,13 @@ try {
   $("#webgl").remove();
 }
 
+// 3D tech-stack balls (own renderer, only renders while on screen)
+let stack = null;
+createStack($("#stackStage"), { mobile, reduced })
+  .then((s) => { stack = s; })
+  .catch((err) => { console.warn("Tech stack 3D unavailable", err); $("#stackStage").remove(); });
+gsap.ticker.add(() => stack?.tick());
+
 // 3D object choreography: a pose per section, blended by scroll position.
 // Computed from scroll every frame (not chained tweens) so jumping around the page always lands on the right pose.
 const base = { ...state, ...(mobile ? { x: 0, y: 0.9, scale: 0.8, opacity: 0.55 } : { x: 2.1 }) };
@@ -166,6 +174,7 @@ const poses = mobile
   ? [
       ["#about", { y: 1.6, scale: 0.6, opacity: 0.3, hue: 0.8 }],
       ["#experience", { y: -1.2, scale: 0.7, hue: 2 }],
+      ["#stack", { y: 2.2, scale: 0.5, opacity: 0.15, hue: 2.4 }],
       ["#contact", { y: 1, scale: 0.9, opacity: 0.55, hue: 3.2 }],
     ]
   : [
@@ -174,6 +183,7 @@ const poses = mobile
       ["#work", { x: 0, y: 0, scale: 1.55, amp: 0.2, freq: 0.7, ring: 0, opacity: 0.35, hue: 1.2 }],
       ["#projects", { x: 2.8, y: -0.4, scale: 0.9, amp: 0.45, ring: 1, opacity: 0.8, hue: 1.6 }],
       ["#experience", { x: 4.3, y: 0.2, scale: 0.75, amp: 0.35, freq: 1.1, opacity: 0.45, hue: 2.1 }],
+      ["#stack", { x: -4.8, y: 0.4, scale: 0.7, amp: 0.5, opacity: 0.25, hue: 2.4 }],
       ["#skills", { x: -4.4, y: -0.6, scale: 0.8, amp: 0.6, opacity: 0.45, hue: 2.6 }],
       ["#contact", { x: 3.1, y: 0, scale: 1.05, amp: 0.4, freq: 0.9, opacity: 1, ring: 1, hue: 3.2 }],
     ];
@@ -269,37 +279,109 @@ function countUp(el) {
 $$(".bento [data-count]").forEach((el) => ScrollTrigger.create({ trigger: el, start: "top 90%", once: true, onEnter: () => countUp(el) }));
 
 /* ───────────── intro (loader → hero) ───────────── */
-function intro() {
-  const counter = { v: 0 };
-  const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-  tl.to(counter, {
-    v: 100, duration: reduced ? 0.2 : 1.6, ease: "power2.inOut",
-    onUpdate: () => {
-      $("#loaderCount").textContent = Math.round(counter.v);
-      $("#loaderBar").style.width = counter.v + "%";
-    },
-  })
-    .to("#loader", { yPercent: -100, duration: 1.1, ease: "expo.inOut" })
-    .add(() => { document.body.classList.remove("is-loading"); lenis?.start(); $("#loader").remove(); })
-    .from(".hero__title .ch", { yPercent: 115, rotate: 8, duration: 1.3, stagger: 0.035 }, "-=0.55")
+const loader = $("#loader");
+const loaderCount = $("#loaderCount");
+const loaderBar = $("#loaderBar");
+const loaderWord = $("#loaderWord");
+const loaderStatus = $("#loaderStatus");
+let introTl = null;
+let wordTimer = 0;
+
+function unlock() {
+  clearInterval(wordTimer);
+  document.body.classList.remove("is-loading");
+  lenis?.start();
+  loader.remove();
+}
+
+// Real progress: fonts, the page's eager assets and the 3D scene, eased so it never jumps.
+const loadProg = { shown: 0, target: 0 };
+const tasks = [
+  [(document.fonts?.ready ?? Promise.resolve()), "Loading fonts"],
+  [new Promise((r) => (document.readyState === "complete" ? r() : window.addEventListener("load", r, { once: true }))), "Loading assets"],
+  [new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))), "Preparing 3D scene"],
+];
+let done = 0;
+tasks.forEach(([p, label]) => p.then(() => {
+  done++;
+  loadProg.target = Math.max(loadProg.target, (done / tasks.length) * 100);
+  if (done < tasks.length) loaderStatus.textContent = tasks[done]?.[1] ?? label;
+}));
+const allLoaded = Promise.all(tasks.map(([p]) => p));
+
+function drawProgress() {
+  loaderCount.textContent = Math.round(loadProg.shown);
+  loaderBar.style.transform = `scaleX(${loadProg.shown / 100})`;
+}
+
+function startLoader() {
+  // greeting in several languages
+  const words = ["Hello", "नमस्ते", "Hola", "Bonjour", "Ciao", "Hallo", "こんにちは", "Olá"];
+  let w = 0;
+  if (!reduced) wordTimer = setInterval(() => {
+    w = (w + 1) % words.length;
+    gsap.fromTo(loaderWord, { yPercent: 60, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.35, ease: "power3.out", overwrite: true });
+    loaderWord.textContent = words[w];
+  }, 260);
+
+  // logo: stroke draws itself, then fills
+  gsap.timeline()
+    .to(".loader__logo text", { strokeDashoffset: 0, duration: reduced ? 0.1 : 1.4, ease: "power2.inOut" })
+    .to(".loader__logo text", { fillOpacity: 1, strokeOpacity: 0, duration: 0.6, ease: "power2.out" }, "-=0.25");
+  gsap.from(".loader__foot > *, .loader__word", { y: 20, opacity: 0, duration: 0.9, stagger: 0.08, ease: "expo.out" });
+
+  // counter eases toward the real target; holds at 90 until everything is loaded
+  const minTime = new Promise((r) => setTimeout(r, reduced ? 200 : 1700));
+  const floor = { v: 0 }; // a slow first byte still shows motion
+  gsap.to(floor, { v: 35, duration: 1.2, ease: "power1.out" });
+  const tick = () => {
+    const cap = loadProg.finished ? 100 : Math.min(Math.max(loadProg.target, floor.v), 90);
+    loadProg.shown += (cap - loadProg.shown) * 0.08 + (loadProg.shown < cap ? 0.25 : 0);
+    loadProg.shown = Math.min(loadProg.shown, cap);
+    drawProgress();
+  };
+  gsap.ticker.add(tick);
+
+  Promise.race([Promise.all([allLoaded, minTime]), new Promise((r) => setTimeout(r, 4500))]).then(() => {
+    loadProg.finished = true;
+    loaderStatus.textContent = "Ready";
+    gsap.delayedCall(reduced ? 0 : 0.55, () => { gsap.ticker.remove(tick); loadProg.shown = 100; drawProgress(); reveal(); });
+  });
+}
+
+function reveal() {
+  if (introTl) return;
+  clearInterval(wordTimer);
+  introTl = gsap.timeline({ defaults: { ease: "expo.out" } });
+  introTl
+    .to(".loader__center, .loader__foot, .loader__bar", { y: -40, opacity: 0, duration: 0.6, ease: "power3.in", stagger: 0.05 })
+    // curtain lifts with a curved bottom edge
+    .to(loader, { yPercent: -100, duration: 1.2, ease: "expo.inOut" }, "-=0.15")
+    .to("#loaderCurve", { attr: { d: "M0 0 L100 0 L100 0 Q50 100 0 0 Z" }, duration: 0.6, ease: "power2.in" }, "<")
+    .to("#loaderCurve", { attr: { d: "M0 0 L100 0 L100 0 Q50 0 0 0 Z" }, duration: 0.6, ease: "power2.out" }, ">")
+    .add(unlock, "-=0.35")
+    .from(".hero__title .ch", { yPercent: 115, rotate: 8, duration: 1.3, stagger: 0.035 }, "-=0.9")
     .from(".hero__eyebrow", { y: 20, opacity: 0, duration: 1 }, "-=1.1")
     .from(".hero__role, .hero__cta", { y: 30, opacity: 0, duration: 1.1, stagger: 0.1 }, "-=1")
     .from(".hero__stats .stat", { y: 30, opacity: 0, duration: 1, stagger: 0.08 }, "-=0.9")
+    .from(".nav", { yPercent: -100, opacity: 0, duration: 1, clearProps: "transform,opacity" }, "-=1.2")
     .to(intro3d, { grow: 1, duration: 2.2, ease: "expo.out" }, "-=2")
     .add(() => {
       $$(".hero [data-count]").forEach(countUp);
     }, "-=1.6");
 }
+
 document.body.classList.add("is-loading");
-// don't let a slow font request hold the loader
-Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 2000))]).then(intro);
-// safety net: never leave the page locked behind the loader
+startLoader();
+// safety net: if animation frames are stalled (e.g. opened in a background tab), jump straight to the page
 setTimeout(() => {
-  if (!$("#loader")) return;
-  $("#loader").remove();
-  document.body.classList.remove("is-loading");
-  lenis?.start();
-}, 7000);
+  if (!loader.isConnected) return;
+  loadProg.finished = true;
+  loadProg.shown = 100;
+  drawProgress();
+  reveal();
+  introTl.progress(1);
+}, 8000);
 
 /* ───────────── scroll animations ───────────── */
 if (!reduced) {
@@ -405,6 +487,7 @@ $("#copyEmail").addEventListener("click", copyEmail);
     { group: "Navigate", icon: "★", label: "Featured work", run: go("#work") },
     { group: "Navigate", icon: "◧", label: "Client work", run: go("#projects") },
     { group: "Navigate", icon: "⌁", label: "Experience", run: go("#experience") },
+    { group: "Navigate", icon: "◍", label: "Tech stack (3D)", run: go("#stack") },
     { group: "Navigate", icon: "✦", label: "Skills & education", run: go("#skills") },
     { group: "Navigate", icon: "✉", label: "Contact", run: go("#contact") },
     { group: "Actions", icon: "⧉", label: "Copy email address", hint: profile.email, run: copyEmail },

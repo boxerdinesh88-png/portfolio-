@@ -15,20 +15,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.13/dist/lenis.css" />
-  <link rel="stylesheet" href="assets/css/style.css?v=5" />
+  <link rel="stylesheet" href="assets/css/style.css?v=9" />
 
   <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" } }
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+    } }
   </script>
 </head>
 <body>
   <!-- preloader -->
   <div class="loader" id="loader" aria-hidden="true">
-    <div class="loader__inner">
-      <span class="loader__name">Dinesh Kumar</span>
-      <span class="loader__count" id="loaderCount">0</span>
+    <div class="loader__glow"></div>
+    <div class="loader__center">
+      <svg class="loader__logo" viewBox="0 0 220 120">
+        <defs>
+          <linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#818cf8"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+        </defs>
+        <text x="110" y="92" text-anchor="middle">DK</text>
+      </svg>
+      <div class="loader__word"><span class="dot"></span><span id="loaderWord">Hello</span></div>
+    </div>
+    <div class="loader__foot">
+      <span class="loader__meta">Dinesh Kumar<br /><em>Full Stack Developer</em></span>
+      <span class="loader__status" id="loaderStatus">Loading experience</span>
+      <span class="loader__count"><b id="loaderCount">0</b><i>%</i></span>
     </div>
     <div class="loader__bar"><span id="loaderBar"></span></div>
+    <svg class="loader__curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="loaderCurve" d="M0 0 L100 0 L100 0 Q50 0 0 0 Z" /></svg>
   </div>
 
   <canvas id="webgl" aria-hidden="true"></canvas>
@@ -115,7 +130,7 @@
         </article>
         <article class="bento__card bento__stat spot" data-reveal>
           <span class="bento__kicker">Shipped</span>
-          <div class="big"><span data-count="19" data-suffix="+">0+</span></div>
+          <div class="big"><span data-count="24" data-suffix="+">0+</span></div>
           <p>projects across full-stack apps, WordPress &amp; client sites</p>
         </article>
         <article class="bento__card bento__stack spot" data-reveal>
@@ -162,6 +177,7 @@
         <div class="filters" role="tablist" id="filters">
           <button class="is-active" data-f="all">All</button>
           <button data-f="wp">WordPress</button>
+          <button data-f="ec">E-commerce</button>
           <button data-f="fe">Front-end</button>
         </div>
       </div>
@@ -177,9 +193,21 @@
       </div>
     </section>
 
+    <!-- 3D TECH STACK -->
+    <section class="section stack3d" id="stack">
+      <div class="stack3d__head">
+        <div>
+          <div class="section__label">04 — Tech stack</div>
+          <h2 class="h2">My tech <em>stack</em></h2>
+        </div>
+        <p class="stack3d__hint"><span class="stack3d__hint-desk">Move your cursor through the stack · click to scatter</span><span class="stack3d__hint-touch">Drag through the stack · tap to scatter</span></p>
+      </div>
+      <div class="stack3d__stage" id="stackStage"><canvas aria-label="Interactive 3D balls showing Python, Django, React, Next.js, TypeScript, JavaScript, MySQL, WordPress, Tailwind, Bootstrap, Git, HTML5, CSS3, Figma, Three.js and Node.js"></canvas></div>
+    </section>
+
     <!-- SKILLS + EDUCATION -->
     <section class="section skills" id="skills">
-      <div class="section__label">04 — Toolkit</div>
+      <div class="section__label">05 — Toolkit</div>
       <h2 class="h2">Skills &amp; <em>education</em></h2>
       <div class="skills__grid">
         <div class="skills__list" id="skillsList"></div>
@@ -219,6 +247,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script type="module" src="assets/js/main.js?v=5"></script>
+  <script type="module" src="assets/js/main.js?v=12"></script>
 </body>
 </html>

@@ -15,7 +15,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/dinesh-kumar-6a6b9530b",
   stats: [
     { value: 3, suffix: "+", label: "Years experience" },
-    { value: 19, suffix: "+", label: "Projects shipped" },
+    { value: 24, suffix: "+", label: "Projects shipped" },
     { value: 3, suffix: "", label: "Companies" },
   ],
 };
@@ -62,8 +62,13 @@ export const featured = [
   },
 ];
 
-// cat: "wp" = WordPress / client sites, "fe" = front-end builds
+// cat: "wp" = WordPress / client sites, "ec" = e-commerce / custom builds, "fe" = front-end builds
 export const projects = [
+  { cat: "ec", title: "RDX Denim", subtitle: "Denim e-commerce store & wholesale B2B", img: "assets/projects/rdxdenim.webp", stack: ["PHP", "JavaScript", "E-commerce"], link: "https://rdxdenim.com/" },
+  { cat: "wp", title: "UTSI International", subtitle: "OT/ICS cybersecurity company website", img: "assets/projects/utsi.webp", stack: ["WordPress", "Elementor"], link: "https://utsi.com/" },
+  { cat: "ec", title: "The Mad Chandler", subtitle: "Hand-poured candle store (San Diego)", img: "assets/projects/madchandler.webp", stack: ["WordPress", "WooCommerce"], link: "https://madchandler.com/" },
+  { cat: "wp", title: "HRD Infratech", subtitle: "Construction, interiors & hospital fit-outs", img: "assets/projects/hrdinfratech.webp", stack: ["WordPress", "Elementor"], link: "https://hrdinfratech.com/" },
+  { cat: "wp", title: "Mishak Enterprises", subtitle: "City gas distribution O&M services", img: "assets/projects/mishak.webp", stack: ["WordPress", "Elementor"], link: "https://mishakenterprises.in/" },
   { cat: "wp", title: "Spartakus Insurance", subtitle: "Insurance services website", img: "assets/projects/spartakus.webp", stack: ["WordPress", "Elementor"], link: "https://spartakusinsurance.com" },
   { cat: "wp", title: "Silver Sandstone", subtitle: "Luxury travel & hospitality", img: "assets/projects/silversandstone.webp", stack: ["WordPress", "Elementor", "JS"], link: "https://silversandstonehospitality.com" },
   { cat: "wp", title: "Happy Home IC", subtitle: "Interior & construction landing", img: "assets/projects/happyhome.webp", stack: ["WordPress", "Elementor"], link: "https://happyhomeic.com" },
