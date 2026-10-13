@@ -356,6 +356,25 @@ main, .footer, .nav { position: relative; z-index: 2; }
 .enode__cert:hover { background: rgba(255,255,255,.07); border-color: rgba(129,140,248,.5); }
 .enode__cert img { width: 44px; height: 60px; object-fit: cover; object-position: top; border-radius: 6px; flex: none; }
 .enode__cert span { font-weight: 600; font-size: 14px; }
+
+/* ───────────── course certificates ───────────── */
+.certs { margin-top: clamp(64px, 8vw, 110px); }
+.certgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 40px; }
+.cert { border-radius: 20px; border: 1px solid var(--line); background: rgba(11,13,20,.8); overflow: hidden; display: flex; flex-direction: column; transition: border-color .4s, transform .5s var(--ease); }
+.cert:hover { border-color: rgba(129,140,248,.45); transform: translateY(-4px); }
+.cert__img { display: block; aspect-ratio: 900 / 638; overflow: hidden; background: #fff; border-bottom: 1px solid var(--line); }
+.cert__img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+.cert:hover .cert__img img { transform: scale(1.04); }
+.cert__body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 6px; }
+.cert__top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cert__issuer { font-family: var(--mono); font-size: 12px; color: var(--a2); }
+.cert__score { font-family: var(--mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; color: #c7d2fe; border: 1px solid rgba(129,140,248,.5); background: rgba(129,140,248,.12); }
+.cert h4 { font-size: 18px; font-weight: 650; letter-spacing: -.02em; }
+.cert__links { display: flex; gap: 16px; margin-top: 6px; font-size: 14px; font-weight: 600; }
+.cert__links a { color: var(--muted); transition: color .25s; }
+.cert__links a:hover { color: var(--fg); }
+@media (max-width: 900px) { .certgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .certgrid { grid-template-columns: 1fr; } }
 @media (max-width: 900px) {
   .etl { grid-template-columns: 1fr; padding-top: 0; padding-left: 40px; gap: 16px; }
   .etl__track { left: 8px; right: auto; top: 6px; bottom: 6px; width: 2px; height: auto; }

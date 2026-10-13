@@ -21,6 +21,7 @@ assets/
   js/scene.js    ← Three.js scene
   js/main.js     ← rendering, smooth scroll and animations
   projects/      ← project screenshots
+  certs/         ← course certificates (PDF + thumbnail)
   Dinesh-Kumar-Resume.pdf
 ```
 

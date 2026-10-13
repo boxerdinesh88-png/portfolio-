@@ -152,3 +152,9 @@ export const education = [
   { title: "Intermediate (XII)", place: "GMSBV Shahdara, Delhi · CBSE", period: "2021", kind: "done" },
   { title: "High School (X)", place: "SFCS Loni Rampark · UP Board", period: "2019", kind: "done" },
 ];
+
+export const certifications = [
+  { title: "Complete HTML", issuer: "KnowledgeGate", date: "Jul 2026", score: 92, file: "assets/certs/complete-html.pdf", thumb: "assets/certs/complete-html.webp", verify: "https://knowledgegate.in/certificate/253A8050" },
+  { title: "Complete CSS", issuer: "KnowledgeGate", date: "Oct 2026", score: 71, file: "assets/certs/complete-css.pdf", thumb: "assets/certs/complete-css.webp", verify: "https://knowledgegate.in/certificate/D699CB1C" },
+  { title: "C Programming", issuer: "KnowledgeGate", date: "Oct 2026", score: 74, file: "assets/certs/c-programming.pdf", thumb: "assets/certs/c-programming.webp", verify: "https://knowledgegate.in/certificate/34F0BF00" },
+];

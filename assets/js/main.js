@@ -1,4 +1,4 @@
-import { profile, services, featured, projects, experience, skills, education } from "./data.js?v=9";
+import { profile, services, featured, projects, experience, skills, education, certifications } from "./data.js?v=10";
 import { createScene, state } from "./scene.js?v=7";
 import { createStack } from "./stack.js?v=9";
 
@@ -119,6 +119,18 @@ $("#eduTimeline").insertAdjacentHTML("beforeend", education
     </div>
   </div>`)
   .join(""));
+
+$("#certGrid").innerHTML = certifications
+  .map((c) => `
+  <article class="cert">
+    <a class="cert__img" href="${c.file}" ${ext} aria-label="Open ${esc(c.title)} certificate (PDF)"><img src="${c.thumb}" alt="${esc(c.title)} certificate — ${esc(c.issuer)}" loading="lazy" /></a>
+    <div class="cert__body">
+      <div class="cert__top"><span class="cert__issuer">${esc(c.issuer)} · ${esc(c.date)}</span><span class="cert__score">${c.score}%</span></div>
+      <h4>${esc(c.title)}</h4>
+      <div class="cert__links"><a href="${c.file}" ${ext}>View certificate ↗</a><a href="${c.verify}" ${ext}>Verify ↗</a></div>
+    </div>
+  </article>`)
+  .join("");
 
 const email = $("#email");
 email.href = `mailto:${profile.email}`;
@@ -475,6 +487,10 @@ if (!reduced) {
     gsap.from(n.querySelector(".enode__dot"), { scale: 0, duration: 0.6, ease: "back.out(3)", delay: 0.2 + i * 0.12, scrollTrigger: { trigger: "#eduTimeline", start: "top 78%" } });
   });
 
+  $$(".cert").forEach((el, i) => {
+    gsap.from(el, { y: 60, opacity: 0, duration: 1, ease: "expo.out", delay: i * 0.1, scrollTrigger: { trigger: "#certGrid", start: "top 85%" } });
+  });
+
   const mm = gsap.matchMedia();
 
   // horizontal featured projects (desktop)
@@ -502,7 +518,7 @@ if (!reduced) {
 }
 
 /* ───────────── spotlight, clock, copy email ───────────── */
-$$(".service, .fcard, .pcard, .scard, .enode__card").forEach((el) => el.classList.add("spot"));
+$$(".service, .fcard, .pcard, .scard, .enode__card, .cert").forEach((el) => el.classList.add("spot"));
 document.addEventListener("pointermove", (e) => {
   const el = e.target.closest?.(".spot");
   if (!el) return;
@@ -554,12 +570,14 @@ $("#copyEmail").addEventListener("click", copyEmail);
     { group: "Navigate", icon: "⌁", label: "Experience", run: go("#experience") },
     { group: "Navigate", icon: "◍", label: "Tech stack (3D)", run: go("#stack") },
     { group: "Navigate", icon: "✦", label: "Skills & education", run: go("#skills") },
+    { group: "Navigate", icon: "✓", label: "Certificates", run: go("#certs") },
     { group: "Navigate", icon: "✉", label: "Contact", run: go("#contact") },
     { group: "Actions", icon: "⧉", label: "Copy email address", hint: profile.email, run: copyEmail },
     { group: "Actions", icon: "↓", label: "Download résumé", hint: "PDF", run: open(profile.resume) },
     { group: "Actions", icon: "☏", label: "Chat on WhatsApp", run: open(profile.whatsapp) },
     { group: "Links", icon: "in", label: "LinkedIn", run: open(profile.linkedin) },
     { group: "Links", icon: "⌥", label: "GitHub", run: open(profile.github) },
+    ...certifications.map((c) => ({ group: "Certificates", icon: "✓", label: c.title, hint: `${c.issuer} · ${c.score}%`, run: open(c.verify) })),
     ...featured.map((p) => ({ group: "Projects", icon: "↗", label: p.title, hint: p.subtitle, run: open(p.link) })),
     ...projects.map((p) => ({ group: "Projects", icon: "↗", label: p.title, hint: p.subtitle, run: open(p.link) })),
   ];
