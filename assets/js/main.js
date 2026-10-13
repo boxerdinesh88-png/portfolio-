@@ -120,6 +120,17 @@ $("#eduTimeline").insertAdjacentHTML("beforeend", education
   </div>`)
   .join(""));
 
+// hover-scroll speed: taller screenshots take longer, so every site pans at the same pace
+$$(".fcard__img img, .pcard__img img").forEach((img) => {
+  const set = () => {
+    const box = img.getBoundingClientRect();
+    const overflow = (img.naturalHeight / img.naturalWidth) * box.width - box.height;
+    img.style.setProperty("--sd", `${Math.min(Math.max(overflow / 450, 0.8), 9).toFixed(2)}s`);
+  };
+  img.complete && img.naturalWidth ? set() : img.addEventListener("load", set, { once: true });
+  img.closest("a").addEventListener("pointerenter", set);
+});
+
 $("#certGrid").innerHTML = certifications
   .map((c) => `
   <article class="cert">

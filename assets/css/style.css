@@ -204,8 +204,7 @@ main, .footer, .nav { position: relative; z-index: 2; }
 }
 .fcard:hover { border-color: rgba(129,140,248,.5); }
 .fcard__img { aspect-ratio: 16/9; overflow: hidden; position: relative; background: var(--bg2); }
-.fcard__img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transform: scale(1.08); transition: transform 1s var(--ease); }
-.fcard:hover .fcard__img img { transform: scale(1.14); }
+.fcard__img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transform: scale(1.08); transition: object-position .9s var(--ease); }
 .fcard__n { position: absolute; top: 14px; left: 14px; font-family: var(--mono); font-size: 12px; padding: 5px 11px; border-radius: 999px; background: rgba(6,7,11,.75); backdrop-filter: blur(6px); border: 1px solid var(--line2); }
 .fcard__body { padding: 24px 26px 26px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
 .fcard__top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
@@ -250,9 +249,10 @@ main, .footer, .nav { position: relative; z-index: 2; }
 .pcard:hover { transform: translateY(-8px); border-color: transparent; box-shadow: 0 30px 60px -30px rgba(79,70,229,.45); }
 .pcard:hover::before { opacity: 1; }
 .pcard__img { position: relative; aspect-ratio: 16/10; overflow: hidden; background: var(--bg2); }
-.pcard__img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 1.1s var(--ease); }
-.pcard__img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(6,7,11,.85)); opacity: 0; transition: opacity .5s; }
-.pcard:hover .pcard__img img { transform: scale(1.06); }
+.pcard__img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transition: object-position .9s var(--ease); }
+.pcard__img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 65%, rgba(6,7,11,.75)); opacity: 0; transition: opacity .5s; }
+/* full-page screenshots scroll top → bottom on hover; --sd is set per image in main.js from its height */
+.fcard__img:hover img, .pcard:hover .pcard__img img { object-position: 50% 100%; transition: object-position var(--sd, 3s) cubic-bezier(.45, 0, .55, 1); }
 .pcard:hover .pcard__img::after { opacity: 1; }
 .pcard__cat {
   position: absolute; top: 14px; left: 14px; z-index: 2; font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em;
@@ -395,6 +395,7 @@ main, .footer, .nav { position: relative; z-index: 2; }
 
 @media (prefers-reduced-motion: reduce) {
   .grain, .dot, .hero__scroll span { animation: none; }
+  .fcard__img:hover img, .pcard:hover .pcard__img img { object-position: 50% 0; }
   .about__lead .w { opacity: 1; }
 }
 
