@@ -1,4 +1,4 @@
-import { profile, services, featured, projects, experience, skills, education, certifications } from "./data.js?v=11";
+import { profile, services, featured, projects, experience, skills, education, certifications } from "./data.js?v=12";
 import { createScene, state } from "./scene.js?v=7";
 import { createStack } from "./stack.js?v=9";
 
@@ -136,9 +136,9 @@ $("#certGrid").innerHTML = certifications
   <article class="cert">
     <a class="cert__img" href="${c.file}" ${ext} aria-label="Open ${esc(c.title)} certificate (PDF)"><img src="${c.thumb}" alt="${esc(c.title)} certificate — ${esc(c.issuer)}" loading="lazy" /></a>
     <div class="cert__body">
-      <div class="cert__top"><span class="cert__issuer">${esc(c.issuer)} · ${esc(c.date)}</span><span class="cert__score">${c.score}%</span></div>
+      <div class="cert__top"><span class="cert__issuer">${esc(c.issuer)} · ${esc(c.date)}</span><span class="cert__score">${c.score ? `${c.score}%` : "Certified"}</span></div>
       <h4>${esc(c.title)}</h4>
-      <div class="cert__links"><a href="${c.file}" ${ext}>View certificate ↗</a><a href="${c.verify}" ${ext}>Verify ↗</a></div>
+      <div class="cert__links"><a href="${c.file}" ${ext}>View certificate ↗</a>${c.verify ? `<a href="${c.verify}" ${ext}>Verify ↗</a>` : ""}</div>
     </div>
   </article>`)
   .join("");
@@ -588,7 +588,7 @@ $("#copyEmail").addEventListener("click", copyEmail);
     { group: "Actions", icon: "☏", label: "Chat on WhatsApp", run: open(profile.whatsapp) },
     { group: "Links", icon: "in", label: "LinkedIn", run: open(profile.linkedin) },
     { group: "Links", icon: "⌥", label: "GitHub", run: open(profile.github) },
-    ...certifications.map((c) => ({ group: "Certificates", icon: "✓", label: c.title, hint: `${c.issuer} · ${c.score}%`, run: open(c.verify) })),
+    ...certifications.map((c) => ({ group: "Certificates", icon: "✓", label: c.title, hint: c.score ? `${c.issuer} · ${c.score}%` : c.issuer, run: open(c.verify || c.file) })),
     ...featured.map((p) => ({ group: "Projects", icon: "↗", label: p.title, hint: p.subtitle, run: open(p.link) })),
     ...projects.map((p) => ({ group: "Projects", icon: "↗", label: p.title, hint: p.subtitle, run: open(p.link) })),
   ];
