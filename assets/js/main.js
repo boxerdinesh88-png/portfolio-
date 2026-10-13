@@ -1,4 +1,4 @@
-import { profile, services, featured, projects, experience, skills, education, certifications } from "./data.js?v=10";
+import { profile, services, featured, projects, experience, skills, education, certifications } from "./data.js?v=11";
 import { createScene, state } from "./scene.js?v=7";
 import { createStack } from "./stack.js?v=9";
 
