@@ -109,6 +109,26 @@ export const experience = [
   },
 ];
 
+// "Meet me" section — a 3D me (Mixamo FBX files in assets/models/) that follows the cursor
+// over the experience rows and dances on click. avatar = the rigged character, moves = one
+// per click, in order — row i also plays move i on hover; hover = what the follower plays
+// while a row's move is still downloading. photo = fallback until 3D loads.
+export const meet = {
+  avatar: "assets/models/wave-hiphop.fbx",
+  photo: "assets/meet/dinesh-full.png",
+  hover: { name: "Jog", file: "assets/models/jog-backwards.fbx" },
+  moves: [
+    { name: "Hip Hop Wave", file: "assets/models/wave-hiphop.fbx" },
+    { name: "Snake Dance", file: "assets/models/snake-hiphop.fbx" },
+    { name: "Hip Hop", file: "assets/models/hiphop-dancing.fbx" },
+    { name: "Macarena", file: "assets/models/macarena.fbx" },
+    { name: "Northern Soul", file: "assets/models/northern-soul.fbx" },
+    { name: "Chicken Dance", file: "assets/models/chicken-dance.fbx" },
+    { name: "Boxing", file: "assets/models/boxing.fbx" },
+    { name: "Reloading", file: "assets/models/reloading.fbx" },
+  ],
+};
+
 // level: 3 = Expert, 2 = Advanced, 1 = Intermediate · icon = file in assets/stack/
 export const skills = [
   { group: "Frontend", blurb: "Interfaces, motion & 3D", items: [

@@ -1,6 +1,7 @@
-import { profile, services, featured, projects, experience, skills, education, certifications } from "./data.js?v=12";
+import { profile, services, featured, projects, experience, skills, education, certifications, meet } from "./data.js?v=14";
 import { createScene, state } from "./scene.js?v=7";
 import { createStack } from "./stack.js?v=9";
+import { createMeet } from "./meet.js?v=3";
 
 const { gsap, ScrollTrigger, Lenis } = window;
 gsap.registerPlugin(ScrollTrigger);
@@ -220,6 +221,9 @@ createStack($("#stackStage"), { mobile, reduced })
   .then((s) => { stack = s; })
   .catch((err) => { console.warn("Tech stack 3D unavailable", err); $("#stackStage").remove(); });
 gsap.ticker.add(() => stack?.tick());
+
+// "Meet me": 3D me following the cursor over the experience rows (loads when scrolled near)
+createMeet($("#meet"), { experience, education, meet, lenis, mobile });
 
 // 3D object choreography: a pose per section, blended by scroll position.
 // Computed from scroll every frame (not chained tweens) so jumping around the page always lands on the right pose.
