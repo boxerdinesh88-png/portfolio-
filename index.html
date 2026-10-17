@@ -6,6 +6,10 @@
   <title>Dinesh Kumar — Full Stack Developer</title>
   <meta name="description" content="Dinesh Kumar — Full Stack Developer (Python, Django, React, Next.js, WordPress). Associate Software Engineer at Energyforge. Portfolio, projects and resume." />
   <meta name="theme-color" content="#06070b" />
+  <script>
+    // dark by default; apply a saved light choice before first paint so there's no flash
+    try { if (localStorage.getItem("theme") === "light") document.documentElement.dataset.theme = "light"; } catch (e) {}
+  </script>
   <meta property="og:title" content="Dinesh Kumar — Full Stack Developer" />
   <meta property="og:description" content="Python · Django · React · Next.js · WordPress — portfolio, projects and resume." />
   <meta property="og:image" content="assets/avatar.jpeg" />
@@ -15,8 +19,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.13/dist/lenis.css" />
-  <link rel="stylesheet" href="assets/css/style.css?v=16" />
-  <link rel="stylesheet" href="assets/css/meet.css?v=4" />
+  <link rel="stylesheet" href="assets/css/style.css?v=17" />
+  <link rel="stylesheet" href="assets/css/meet.css?v=5" />
 
   <script type="importmap">
     { "imports": {
@@ -62,6 +66,10 @@
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav__right">
+      <button class="theme-btn" id="themeToggle" aria-label="Switch to light theme" title="Switch theme">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>
+      </button>
       <button class="kbd-btn" id="cmdOpen" aria-label="Open command menu"><span>Search</span><kbd id="cmdKey">Ctrl K</kbd></button>
       <a class="btn btn--sm" href="assets/Dinesh-Kumar-Resume.pdf" target="_blank" rel="noopener" data-magnetic>Resume ↓</a>
     </div>
@@ -279,6 +287,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script type="module" src="assets/js/main.js?v=19"></script>
+  <script type="module" src="assets/js/main.js?v=20"></script>
 </body>
 </html>

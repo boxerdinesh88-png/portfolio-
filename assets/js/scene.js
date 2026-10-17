@@ -116,14 +116,19 @@ export function createScene(canvas, { mobile = false, reduced = false } = {}) {
   const pos = new Float32Array(count * 3);
   const col = new Float32Array(count * 3);
   const palette = [new THREE.Color("#818cf8"), new THREE.Color("#22d3ee"), new THREE.Color("#c084fc"), new THREE.Color("#ffffff")];
+  // light theme: same hues, deep enough to read on a pale background (white becomes ink)
+  const paletteLight = [new THREE.Color("#4f46e5"), new THREE.Color("#0891b2"), new THREE.Color("#9333ea"), new THREE.Color("#1e1b4b")];
+  const colLight = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
     const r = 3.2 + Math.random() * 9;
     const th = Math.random() * Math.PI * 2;
     const ph = Math.acos(2 * Math.random() - 1);
     pos.set([r * Math.sin(ph) * Math.cos(th), r * Math.sin(ph) * Math.sin(th) * 0.7, r * Math.cos(ph) - 2], i * 3);
-    const c = palette[(Math.random() * palette.length) | 0];
-    col.set([c.r, c.g, c.b], i * 3);
+    const k = (Math.random() * palette.length) | 0;
+    col.set([palette[k].r, palette[k].g, palette[k].b], i * 3);
+    colLight.set([paletteLight[k].r, paletteLight[k].g, paletteLight[k].b], i * 3);
   }
+  const colDark = col.slice();
   const pGeo = new THREE.BufferGeometry();
   pGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
   pGeo.setAttribute("color", new THREE.BufferAttribute(col, 3));
@@ -193,5 +198,19 @@ export function createScene(canvas, { mobile = false, reduced = false } = {}) {
     renderer.render(scene, camera);
   }
 
-  return { tick, setVelocity };
+  // additive glow vanishes on a light page, so light mode switches to normal blending and darker colours
+  function setTheme(light) {
+    const bg = light ? 0xf5f6fa : 0x06070b;
+    renderer.setClearColor(bg, 1);
+    scene.fog.color.set(bg);
+    const blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+    [ringMat, ring2.material, pMat].forEach((m) => { m.blending = blending; m.needsUpdate = true; });
+    ringMat.color.set(light ? 0x4f46e5 : 0x818cf8);
+    ring2.material.color.set(light ? 0x0891b2 : 0x22d3ee);
+    moon.material.color.set(light ? 0x4f46e5 : 0xffffff);
+    pGeo.attributes.color.array.set(light ? colLight : colDark);
+    pGeo.attributes.color.needsUpdate = true;
+  }
+
+  return { tick, setVelocity, setTheme };
 }

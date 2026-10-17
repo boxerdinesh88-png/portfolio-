@@ -1,5 +1,5 @@
 import { profile, services, featured, projects, experience, skills, education, certifications, meet } from "./data.js?v=14";
-import { createScene, state } from "./scene.js?v=7";
+import { createScene, state } from "./scene.js?v=8";
 import { createStack } from "./stack.js?v=9";
 import { createMeet } from "./meet.js?v=3";
 
@@ -214,6 +214,26 @@ try {
   console.warn("WebGL unavailable", err);
   $("#webgl").remove();
 }
+
+/* ───────────── theme (dark by default, light remembered) ───────────── */
+const html = document.documentElement;
+const isLight = () => html.dataset.theme === "light";
+function applyTheme(light) {
+  if (light) html.dataset.theme = "light"; else delete html.dataset.theme;
+  $('meta[name="theme-color"]').content = light ? "#f5f6fa" : "#06070b";
+  $("#themeToggle").setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
+  scene?.setTheme(light);
+}
+function toggleTheme() {
+  const light = !isLight();
+  html.classList.add("theme-anim");   // cross-fade colours only for this switch
+  clearTimeout(toggleTheme.t);
+  toggleTheme.t = setTimeout(() => html.classList.remove("theme-anim"), 500);
+  applyTheme(light);
+  try { localStorage.setItem("theme", light ? "light" : "dark"); } catch {}
+}
+$("#themeToggle").addEventListener("click", toggleTheme);
+applyTheme(isLight());
 
 // 3D tech-stack balls (own renderer, only renders while on screen)
 let stack = null;
@@ -587,6 +607,7 @@ $("#copyEmail").addEventListener("click", copyEmail);
     { group: "Navigate", icon: "✦", label: "Skills & education", run: go("#skills") },
     { group: "Navigate", icon: "✓", label: "Certificates", run: go("#certs") },
     { group: "Navigate", icon: "✉", label: "Contact", run: go("#contact") },
+    { group: "Actions", icon: "◐", label: "Toggle light / dark theme", run: toggleTheme },
     { group: "Actions", icon: "⧉", label: "Copy email address", hint: profile.email, run: copyEmail },
     { group: "Actions", icon: "↓", label: "Download résumé", hint: "PDF", run: open(profile.resume) },
     { group: "Actions", icon: "☏", label: "Chat on WhatsApp", run: open(profile.whatsapp) },
