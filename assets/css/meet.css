@@ -124,3 +124,23 @@
   .mp { transition: none; }
   .mp__person { animation-duration: 0s !important; }
 }
+
+/* ---------- dancing me as the back-to-top button ---------- */
+.totop {
+  position: fixed; right: 18px; bottom: 18px; z-index: 70; width: 160px; height: 212px;
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity .3s, transform .3s;
+}
+.totop.show { opacity: 1; transform: none; pointer-events: auto; }
+.totop canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.totop.is3d .totop__me { display: none; }
+.totop__me { height: 100%; display: flex; align-items: flex-end; transform-origin: 50% 100%; }
+.totop__me img { height: 100%; width: auto; }
+.totop i {
+  position: absolute; top: -6px; right: -4px; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center; font-style: normal; font-size: 14px;
+  background: var(--a1); color: #fff; transition: transform .25s;
+}
+.totop:hover i, .totop:focus-visible i { transform: translateY(-4px); }
+.mp-open .totop { opacity: 0; pointer-events: none; }
+@media (max-width: 860px) { .totop { width: 120px; height: 160px; right: 10px; bottom: 10px; } }

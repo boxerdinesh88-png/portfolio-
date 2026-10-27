@@ -149,6 +149,8 @@ export function createMeet(root, { experience, education, meet, lenis, mobile })
   closeBtn.addEventListener("click", (e) => close(e.detail === 0));   // detail 0: Enter/Space
   addEventListener("keydown", (e) => { if (e.key === "Escape" && profile.classList.contains("open")) close(true); });
 
+  const toTop = document.getElementById("toTop");
+
   /* ---------- 3D, loaded when the section comes close ---------- */
   let started = false;
   function loadOnce() {
@@ -172,11 +174,31 @@ export function createMeet(root, { experience, education, meet, lenis, mobile })
         followerView.play(av.hoverClip);   // shown while a row's own move is still downloading
         playHoverMove();
       }
+      if (toTop) {
+        const view = createViewer(av, toTop, () => toTop.classList.contains("show") && !profile.classList.contains("open"));
+        // a new dance every few seconds, cycling through all the moves
+        let n = 0;
+        const next = () => !toTop.classList.contains("show") ? setTimeout(next, 1000) : av.clipAt(n).then((clip) => {
+          if (clip) { view.play(clip); toTop.classList.add("is3d"); }
+          n = (n + 1) % av.names.length;
+          av.clipAt(n);   // warm up the next one
+          setTimeout(next, 6000);
+        });
+        next();
+      }
     }).catch((err) => console.warn("Meet me: 3D unavailable, using the photo", err));
   }
   new IntersectionObserver((entries, io) => {
     if (entries.some((e) => e.isIntersecting)) { io.disconnect(); loadOnce(); }
   }, { rootMargin: "600px 0px" }).observe(root);
+
+  /* ---------- back-to-top button: me, dancing, once past the first screen ---------- */
+  if (toTop) {
+    // loads the 3D itself too, for visitors who jump past the section
+    const onScroll = () => { if (toTop.classList.toggle("show", scrollY > innerHeight * 0.8)) loadOnce(); };
+    addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
 }
 
 /* ---------- three.js ---------- */

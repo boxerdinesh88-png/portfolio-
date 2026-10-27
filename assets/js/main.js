@@ -1,7 +1,7 @@
 import { profile, services, featured, projects, experience, skills, education, certifications, meet } from "./data.js?v=14";
 import { createScene, state } from "./scene.js?v=8";
 import { createStack } from "./stack.js?v=9";
-import { createMeet } from "./meet.js?v=3";
+import { createMeet } from "./meet.js?v=5";
 
 const { gsap, ScrollTrigger, Lenis } = window;
 gsap.registerPlugin(ScrollTrigger);
